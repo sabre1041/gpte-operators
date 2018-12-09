@@ -1,0 +1,4 @@
+packageName: gitea
+channels:
+- name: alpha
+  currentCSV: gitea.v0.0.1

@@ -1,0 +1,184 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: gpte-operators
+  namespace: operator-lifecycle-manager
+
+data:
+  customResourceDefinitions: |-
+    - apiVersion: apiextensions.k8s.io/v1beta1
+      kind: CustomResourceDefinition
+      metadata:
+        name: giteas.gpte.opentlc.com
+      spec:
+        group: gpte.opentlc.com
+        names:
+          kind: Gitea
+          listKind: GiteaList
+          plural: giteas
+          singular: gitea
+        scope: Namespaced
+        version: v1alpha1
+  clusterServiceVersions: |-
+    - apiVersion: operators.coreos.com/v1alpha1
+      kind: ClusterServiceVersion
+      metadata:
+        name: gitea.v0.0.1
+        annotations:
+          alm-examples: '[{"apiVersion":"gpte.opentlc.com/v1alpha1","kind":"Gitea","metadata":{"name":"git-server" },"spec":{"postgresqlVolumeSize":"4Gi","giteaVolumeSize":"4Gi","giteaSsl": true}}]'
+      spec:
+        displayName: Gitea
+        description: |
+          Installs a Gitea server and backing PostgreSQL instance into an OpenShift environment
+        version: 0.0.1
+        keywords: ['git', 'scm', 'database', 'postgresql']
+        maturity: alpha
+        maintainers:
+        - name: Red Hat, Inc.
+          email: customerservice@redhat.com
+        provider:
+          name: Red Hat, Inc
+        icon:
+        - base64data: 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
+          mediatype: image/png
+        labels:
+          alm-owner-gitea: gitea
+          alm-status-descriptors: gitea.v0.0.1
+          operated-by: gitea
+        selector:
+          matchLabels:
+            alm-owner-gitea: gitea
+            operated-by: gitea
+        install:
+          strategy: deployment
+          spec:
+            permissions:
+            - serviceAccountName: gitea-operator
+              rules:
+              - apiGroups:
+                - ""
+                resources:
+                - pods
+                - services
+                - endpoints
+                - persistentvolumeclaims
+                - configmaps
+                - secrets
+                - routes
+                - serviceaccounts
+                verbs:
+                - create
+                - update
+                - delete
+                - get
+                - list
+                - watch
+                - patch
+              - apiGroups:
+                - gpte.opentlc.com
+                resources:
+                - giteas
+                verbs:
+                - create
+                - update
+                - delete
+                - get
+                - list
+                - watch
+                - patch
+            clusterPermissions:
+            - rules:
+              - apiVersion: authorization.openshift.io/v1
+                kind: ClusterRole
+                metadata:
+                  labels:
+                    rbac.authorization.k8s.io/aggregate-to-admin: "true"
+                  name: gitea-admin-rules
+                rules:
+                - apiGroups:
+                  - gpte.opentlc.com
+                  resources:
+                  - giteas
+                  verbs:
+                  - create
+                  - update
+                  - delete
+                  - get
+                  - list
+                  - watch
+                  - patch
+            deployments:
+            - name: gitea-operator
+              spec:
+                replicas: 1
+                selector:
+                  matchLabels:
+                    name: gitea-operator
+                template:
+                  metadata:
+                    labels:
+                      name: gitea-operator
+                  spec:
+                    serviceAccountName: gitea-operator
+                    containers:
+                      - name: gitea-operator
+                        image: quay.io/wkulhanek/gitea-operator:v0.0.1
+                        ports:
+                        - containerPort: 60000
+                          name: metrics
+                        imagePullPolicy: Always
+                        env:
+                          - name: WATCH_NAMESPACE
+                            valueFrom:
+                              fieldRef:
+                                fieldPath: metadata.namespace
+                          - name: OPERATOR_NAME
+                            value: "gitea-operator"
+        customresourcedefinitions:
+          owned:
+          - name: giteas.gpte.opentlc.com
+            version: v1alpha1
+            kind: Gitea
+            displayName: Gitea
+            description: Represents a Gitea deployment
+            resources:
+              - kind: Service
+                version: v1
+              - kind: Pod
+                version: v1
+              - kind: ConfigMap
+                version: v1
+              - kind: Secret
+                version: v1
+            specDescriptors:
+              - description: Size of the PostgreSQL Persistent Volume.
+                displayName: PostgreSQL Persistent Volume Size
+                path: postgresqlVolumeSize
+                x-descriptors:
+                  - 'urn:alm:descriptor:com.tectonic.ui:resourceRequirements'
+              - description: Size of the Gitea Persistent Volume.
+                displayName: Gitea Persistent Volume Size
+                path: giteaVolumeSize
+                x-descriptors:
+                  - 'urn:alm:descriptor:com.tectonic.ui:resourceRequirements'
+              - description: Enable SSL communication to Gitea
+                displayName: Enable SSL
+                path: giteaSsl
+                x-descriptors:
+                  - 'urn:alm:descriptor:com.tectonic.ui:booleanSwitch'
+  packages: |-
+    - packageName: gitea
+      channels:
+      - name: alpha
+        currentCSV: gitea.v0.0.1
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: gpte-operators
+  namespace: operator-lifecycle-manager
+spec:
+  configMap: gpte-operators
+  displayName: GPTE Operators
+  publisher: Red Hat
+  sourceType: internal
