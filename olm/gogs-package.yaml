@@ -1,0 +1,4 @@
+packageName: gogs
+channels:
+- name: alpha
+  currentCSV: gogs.v0.0.1

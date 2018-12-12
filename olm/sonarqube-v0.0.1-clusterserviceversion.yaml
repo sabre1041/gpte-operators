@@ -1,0 +1,144 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  name: sonarqube.v0.0.1
+  annotations:
+    alm-examples: '[{"apiVersion":"gpte.opentlc.com/v1alpha1","kind":"Sonarqube","metadata":{"name":"sonarqube" },"spec":{"postgresqlVolumeSize":"10Gi","sonarqubeVolumeSize":"10Gi","sonarqubeSsl": true}}]'
+spec:
+  displayName: Sonarqube
+  description: |
+    Installs a Sonarqube server and backing PostgreSQL instance into an OpenShift environment
+  version: 0.0.1
+  keywords: ['git', 'ci', 'database', 'postgresql', 'scanner']
+  maturity: alpha
+  maintainers:
+  - name: Red Hat, Inc.
+    email: customerservice@redhat.com
+  provider:
+    name: Red Hat, Inc
+  icon:
+  - base64data: R0lGODlh8ADwAOfDAEmc0kqc0kqd0kud00ye002e006f00+f00+f1FCg1FGg1FKh1FOh1FSi1VWj1Vaj1Vej1Vek1lik1lml1lql1lum1lym112n116n116o11+o12Co2GGp2GKq2GOq2GOq2WSr2WWr2Was2Wes2Wit2mmt2mqu2muu2muv2myv222v222w226w22+x23Cx3HGy3HKy3HKz3HOz3HSz3XW03Xa03Xe13Xi23nm23nq23nq33nu33ny43324336533+533+634C64IG64IG74IK74IO74IS84IS84YW94Ya94Ye+4Yi+4om/4oq/4ovA4o3B447B447C44/C45DC45DD5JHD5JLE5JPE5JTF5ZXF5ZXG5ZbG5ZfG5ZjH5ZjH5pnH5prI5pvJ5pzJ5p3J553K557K55/L56DL6KHM6KLM6KLN6KPN6KTN6KTO6aXO6abO6abP6afP6ajQ6anQ6qrR6qvR6qvS6qzS663S667T66/U67DU67DU7LHV7LLV7LPV7LPW7LTW7LXX7bbX7bfY7bjY7bjZ7rnZ7rrZ7rra7rva7rzb7r3b777c77/c78Dd78Hd8MLe8MPe8MTf8MTf8cXg8cfg8cfh8cjh8cnh8sni8sri8svj8szj8s7k887l88/l89Dl89Hm9NLn9NPn9NTo9NXo9dbo9dbp9dfp9djq9dnq9trr9tvr9tvs9tzs9t3s993t997t99/u9+Du9+Hv+OLv+OPw+OTw+OXx+OXx+ebx+efy+ejz+enz+urz+ur0+uv0+uz1+v///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////yH5BAEKAP8ALAAAAADwAPAAAAj+AP8JHEiwoMGDCBMqXMiwocOHECNKnEixosWLGDNq3Mixo8ePIEOKHEmypMmTKFOqXMmypcuXMGPKnEmzps2bOHPq3Mmzp8+fQIMKHUq0qNGjSJMqXcq0qdOnUKNKnUq1qtWr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
+    mediatype: image/png
+  labels:
+    alm-owner-sonarqube: sonarqube
+    alm-status-descriptors: sonarqube.v0.0.1
+    operated-by: sonarqube
+  selector:
+    matchLabels:
+      alm-owner-sonarqube: sonarqube
+      operated-by: sonarqube
+  install:
+    strategy: deployment
+    spec:
+      permissions:
+      - serviceAccountName: sonarqube-operator
+        rules:
+        - apiGroups:
+          - ""
+          resources:
+          - pods
+          - services
+          - endpoints
+          - persistentvolumeclaims
+          - configmaps
+          - secrets
+          - routes
+          - serviceaccounts
+          verbs:
+          - create
+          - update
+          - delete
+          - get
+          - list
+          - watch
+          - patch
+        - apiGroups:
+          - gpte.opentlc.com
+          resources:
+          - sonarqubes
+          verbs:
+          - create
+          - update
+          - delete
+          - get
+          - list
+          - watch
+          - patch
+      clusterPermissions:
+      - rules:
+        - apiVersion: authorization.openshift.io/v1
+          kind: ClusterRole
+          metadata:
+            labels:
+              rbac.authorization.k8s.io/aggregate-to-admin: "true"
+            name: sonarqube-admin-rules
+          rules:
+          - apiGroups:
+            - gpte.opentlc.com
+            resources:
+            - sonarqubes
+            verbs:
+            - create
+            - update
+            - delete
+            - get
+            - list
+            - watch
+            - patch
+      deployments:
+      - name: sonarqube-operator
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              name: sonarqube-operator
+          template:
+            metadata:
+              labels:
+                name: sonarqube-operator
+            spec:
+              serviceAccountName: sonarqube-operator
+              containers:
+                - name: sonarqube-operator
+                  image: quay.io/wkulhanek/sonarqube-operator:v0.0.1
+                  ports:
+                  - containerPort: 60000
+                    name: metrics
+                  imagePullPolicy: Always
+                  env:
+                    - name: WATCH_NAMESPACE
+                      valueFrom:
+                        fieldRef:
+                          fieldPath: metadata.namespace
+                    - name: OPERATOR_NAME
+                      value: "sonarqube-operator"
+  customresourcedefinitions:
+    owned:
+    - name: sonarqubes.gpte.opentlc.com
+      version: v1alpha1
+      kind: Sonarqube
+      displayName: Sonarqube
+      description: Represents a Sonarqube deployment
+      resources:
+        - kind: Service
+          version: v1
+        - kind: Pod
+          version: v1
+        - kind: PersistentVolumeClaim
+          version: v1
+      specDescriptors:
+        - description: Size of the PostgreSQL Persistent Volume.
+          displayName: PostgreSQL Persistent Volume Size
+          path: postgresqlVolumeSize
+          x-descriptors:
+            - 'urn:alm:descriptor:com.tectonic.ui:resourceRequirements'
+        - description: Size of the Sonarqube Persistent Volume.
+          displayName: Sonarqube Persistent Volume Size
+          path: sonarqubeVolumeSize
+          x-descriptors:
+            - 'urn:alm:descriptor:com.tectonic.ui:resourceRequirements'
+        - description: Enable SSL communication to Sonarqube
+          displayName: Enable SSL
+          path: sonarqubeSsl
+          x-descriptors:
+            - 'urn:alm:descriptor:com.tectonic.ui:booleanSwitch'

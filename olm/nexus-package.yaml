@@ -1,0 +1,4 @@
+packageName: nexus
+channels:
+- name: alpha
+  currentCSV: nexus.v0.0.1

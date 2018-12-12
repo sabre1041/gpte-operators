@@ -1,0 +1,136 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  name: nexus.v0.0.1
+  annotations:
+    alm-examples: '[{"apiVersion":"gpte.opentlc.com/v1alpha1","kind":"Nexus","metadata":{"name":"nexus-repository" },"spec":{"nexusVolumeSize":"5Gi","nexusSsl": true}}]'
+spec:
+  displayName: Nexus
+  description: |
+    Installs a Nexus server with persistent storage into an OpenShift environment
+  version: 0.0.1
+  keywords: ['nexus', 'artifact']
+  maturity: alpha
+  maintainers:
+  - name: Red Hat, Inc.
+    email: customerservice@redhat.com
+  provider:
+    name: Red Hat, Inc
+  icon:
+  - base64data: iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAxxJREFUeNrsnEFuE0EQRduRgbDjCD6CgQvEN3BOQLxAghXJCSyfIM4OKZGwT5C5AT4B9g2YI3gJYmGqZqZGM1aEWJCuCnpP6lgzy//V6ar+0z04HA4J4nCCBBgCGPJ0GOqfwWDQvnjz4XYsP6+QJhv7b5/f7+xhoIu6GtIYcS3jDI2ys5FxpcZUhrz9eDeSF1tmhu9MkfHa1pA5Zrij+s/NkCl6hGB60nEHAswSM6REixCUZsgaLUKwNkOWMnbo4Yrqv6wMkfpXS66JjBW6uKC6T9SHtjHsIk0izWEmxIRN7wXb77FgcxFDAEMwBDDkP2F4VO7qnpZuNI6QJhuljKLpBXsBlRrxJbHR6IGaMRNTCguoNC3coos7vYAK/CGgCsaUKito2VsiRQh2ZsgCLUJwY3nIKpGFeLNSH9o1RB5mWgsnksPs/6aaHmRWPZGHxFzUAUMAQzAEMARD4F9yHFCN5OeTjDHSZO1DbqQPKfWhG1BdpDqgAh+0OVxZQKXb7/do4s45AVUs2oCKNSMGY6qsoGUvO7xBKi4CqlgsLKAqUn2KCvxYtt9l2YGd5qDOu8SXiznRhnDdHtwhoIq5qAOGAIZgCGDIE2d4/OLZi1Pd+WVvK2N3/uvnj8Ie2j5EjFAT7ulB3HqRczGmvlHu+elLNeNr4vSUJ9X1JmaIzgzOiPhTmCG061RZ8CdDSqSIsbhzo1ws1t2yd0v/4d6PtMeikz6kOjnk31f+HmTR6E8eQpUFGIIhgCEYAo9CLw+RXoQLzHzK3kLK3v4FZmLGWarzELbg86NmaB6y6eYhXGDmDxeYBWNOHkKVBX9jSIkUMSou8pBY9PIQPRJ9gSZurKTsnXXzEC4w86G6wKzRnzyEKgswBEMAQzAEHoXhQy+brXjIgG65d5+7jaHmINc0hz5NoYwrDalst1fN0PMhfLno2yBObA25xAx3VP9LmyHfEzl6BEoCqqBl7x4pQrA3Qwq0CEF7xlDXD/3qhE+AHGdHsq9OpP4tteSSsUEXF1T3ifrQu8Cs6dLHzJS8M0MvDOh16hCvygIMgYf4LcAA74ge75JmeJgAAAAASUVORK5CYII=
+    mediatype: image/png
+  labels:
+    alm-owner-nexus: nexus
+    alm-status-descriptors: nexus.v0.0.1
+    operated-by: nexus
+  selector:
+    matchLabels:
+      alm-owner-nexus: nexus
+      operated-by: nexus
+  install:
+    strategy: deployment
+    spec:
+      permissions:
+      - serviceAccountName: nexus-operator
+        rules:
+        - apiGroups:
+          - ""
+          resources:
+          - pods
+          - services
+          - endpoints
+          - persistentvolumeclaims
+          - routes
+          verbs:
+          - create
+          - update
+          - delete
+          - get
+          - list
+          - watch
+          - patch
+        - apiGroups:
+          - gpte.opentlc.com
+          resources:
+          - nexus
+          verbs:
+          - create
+          - update
+          - delete
+          - get
+          - list
+          - watch
+          - patch
+      clusterPermissions:
+      - rules:
+        - apiVersion: authorization.openshift.io/v1
+          kind: ClusterRole
+          metadata:
+            labels:
+              rbac.authorization.k8s.io/aggregate-to-admin: "true"
+            name: nexus-admin-rules
+          rules:
+          - apiGroups:
+            - gpte.opentlc.com
+            resources:
+            - nexus
+            verbs:
+            - create
+            - update
+            - delete
+            - get
+            - list
+            - watch
+            - patch
+      deployments:
+      - name: nexus-operator
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              name: nexus-operator
+          template:
+            metadata:
+              labels:
+                name: nexus-operator
+            spec:
+              serviceAccountName: nexus-operator
+              containers:
+                - name: nexus-operator
+                  image: quay.io/wkulhanek/nexus-operator:v0.0.1
+                  ports:
+                  - containerPort: 60000
+                    name: metrics
+                  imagePullPolicy: Always
+                  env:
+                    - name: WATCH_NAMESPACE
+                      valueFrom:
+                        fieldRef:
+                          fieldPath: metadata.namespace
+                    - name: OPERATOR_NAME
+                      value: "nexus-operator"
+  customresourcedefinitions:
+    owned:
+    - name: nexus.gpte.opentlc.com
+      version: v1alpha1
+      kind: Nexus
+      displayName: Nexus
+      description: Represents a Nexus deployment
+      resources:
+        - kind: Service
+          version: v1
+        - kind: Pod
+          version: v1
+        - kind: PersistentVolumeClaim
+          version: v1
+      specDescriptors:
+        - description: Size of the Nexus Persistent Volume.
+          displayName: Nexus Persistent Volume Size
+          path: nexusVolumeSize
+          x-descriptors:
+            - 'urn:alm:descriptor:com.tectonic.ui:resourceRequirements'
+        - description: Enable SSL communication to Nexus
+          displayName: Enable SSL
+          path: neuxusSsl
+          x-descriptors:
+            - 'urn:alm:descriptor:com.tectonic.ui:booleanSwitch'

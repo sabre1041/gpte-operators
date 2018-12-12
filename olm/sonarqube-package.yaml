@@ -1,0 +1,4 @@
+packageName: sonarqube
+channels:
+- name: alpha
+  currentCSV: sonarqube.v0.0.1
